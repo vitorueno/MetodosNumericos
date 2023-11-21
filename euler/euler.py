@@ -2,14 +2,15 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn
+from prettytable import PrettyTable
 
 
 def yLinha(x, y):
-    return (math.cos(y))**2
+    return 2*x
 
 
 def yReal(x, y):
-    return math.atan(x)
+    return x**2
 
 def calcularErro(xi, yi, aproximado):
     return yReal(xi, yi) - aproximado
@@ -26,16 +27,19 @@ def imprimirTabelaEuler(x0, y0, xn, hs):
     for h in hs:
         x, y = euler(x0, y0, xn, h)
 
-        print(f'h\tXi\tAPROXIMADO\tREAL\t\tERRO\t\tERRO RELATIVO')
-        print(h, end='\t')
+        table = PrettyTable(['h', 'xi', 'aproximado', 'real', 'erro', 'erro relativo'])
+        # print(f'h\tXi\tAPROXIMADO\tREAL\t\tERRO\t\tERRO RELATIVO')
+        # print(h, end='\t')
 
         for xi, yi in zip(x, y):
             real = yReal(xi, yi)
             erro = calcularErro(xi, yi, yi)
             relativo = calcularErroRelativo(xi, yi, yi)
-            end = '\n\t' if xi != x[-1] else '\n'
-            print(
-                f'{xi}\t{yi:.5f}\t\t{real:.5f}\t\t{erro:.5f}\t\t{relativo:.5f}', end=end)
+            table.add_row([h, xi, yi, real, erro, relativo])
+            # end = '\n\t' if xi != x[-1] else '\n'
+            # print(
+            #     f'{xi}\t{yi:.5f}\t\t{real:.5f}\t\t{erro:.5f}\t\t{relativo:.5f}', end=end)
+        print(table)
             
 
 def euler(x0, y0, xn, h):
@@ -74,9 +78,9 @@ def imprimirGraficoEuler(x0, y0, xn, h):
 if __name__ == '__main__':
     x0 = 0
     y0 = 0
-    xn = 10
+    xn = 5
     h = 0.1
-    hs = [0.2, 0.1, 0.05]
+    hs = [0.2, 0.1]
 
     imprimirTabelaEuler(x0, y0, xn, hs)
     imprimirGraficoEuler(x0, y0, xn, h)

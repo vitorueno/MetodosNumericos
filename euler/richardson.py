@@ -61,6 +61,9 @@ def euler(x0, y0, xn, h):
 
     return x, y
 
+def euler_step(x0, y0, xn, h):
+    return y0 + h * yLinha(x0, y0)
+
 def imprimirGraficoEulerRirchardson(x0, y0, xn, h):
     x, y = euler(x0, y0, xn, h)
     x2h, y2h = euler(x0, y0, xn, 2*h)
@@ -92,8 +95,32 @@ if __name__ == '__main__':
     x0 = 0
     y0 = 1
     xn = 10
-    h = 0.05
+    h = 0.1
     hs = [0.05]
+
+    y1 = y0
+    x1 = x0
+    y2 = y0 
+    x2 = x0
+    h1 = h 
+    h2 = h/2
+
+    table = PrettyTable(['x1', 'x2', 'real', 'y1 (euler)', 'y2', 'richardson' ])
+    for i in range(int(xn/h)):
+        x1 = round(x1+h1, 2)
+        y1 = y1 + h1*yLinha(x1, y1)
+
+        x2 = round(x2+h2, 2)
+        y2 = y2 + h2*yLinha(x2, y2)
+        x2 = round(x2+h2, 2)
+        y2 = y2 + h2*yLinha(x2, y2)
+
+        richardson = 2* y2 - y1
+
+        if (int(x1) == x1):
+            real = yReal(x1, y1)
+            table.add_row([x1, x2, real, y1, y2, richardson ])
+    print(table)
 
     imprimirTabelaEulerRichardson(x0, y0, xn, hs)
     imprimirGraficoEulerRirchardson(x0, y0, xn, h)
