@@ -28,17 +28,12 @@ def imprimirTabelaEuler(x0, y0, xn, hs):
         x, y = euler(x0, y0, xn, h)
 
         table = PrettyTable(['h', 'xi', 'aproximado', 'real', 'erro', 'erro relativo'])
-        # print(f'h\tXi\tAPROXIMADO\tREAL\t\tERRO\t\tERRO RELATIVO')
-        # print(h, end='\t')
 
         for xi, yi in zip(x, y):
             real = yReal(xi, yi)
             erro = calcularErro(xi, yi, yi)
             relativo = calcularErroRelativo(xi, yi, yi)
             table.add_row([h, xi, yi, real, erro, relativo])
-            # end = '\n\t' if xi != x[-1] else '\n'
-            # print(
-            #     f'{xi}\t{yi:.5f}\t\t{real:.5f}\t\t{erro:.5f}\t\t{relativo:.5f}', end=end)
         print(table)
             
 
