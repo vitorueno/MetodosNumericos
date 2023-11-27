@@ -11,12 +11,23 @@ class Metodo:
         pass 
 
     def range_respostas(self, xn):
-        pass
+        self.reset_method()
+
+        xList = [self.x0]
+        yList = [self.y0]
+
+        n = int((xn / self.h))
+        
+        for i in range(n):
+            x, y = self.next_step()
+            xList.append(x)
+            yList.append(y)
+
+        return xList, yList
 
     def reset_method(self):
         self.x = self.x0 
         self.y = self.y0
-
 
 
 class Euler(Metodo):
@@ -29,25 +40,6 @@ class Euler(Metodo):
         self.x = round(self.x + self.h, 2)
 
         return (self.x, self.y)
-    
-
-    def range_respostas(self, xn):
-        x0 = self.x0 
-        y0 = self.y0 
-
-        xList = [x0]
-        yList = [y0]
-
-        n = int((xn / self.h))
-        
-        for i in range(n):
-            x0 = round(x0 + self.h, 2)
-            y0 += self.h * self.f(x0, y0)
-
-            xList.append(x0)
-            yList.append(y0)
-
-        return xList, yList
     
 
 class Richardson(Metodo):
@@ -107,32 +99,51 @@ class RungeKutta(Metodo):
 
         return self.x, self.y
 
-    def range_respostas(self, xn):
-        x0 = self.x0 
-        y0 = self.y0 
 
-        xList = [x0]
-        yList = [y0]
+class EulerMelhorado(Metodo):
+    def __init__(self, x0, y0, h, f):
+        super().__init__(x0, y0, h)
+        self.f = f
 
-        n = int((xn / self.h))
-        
-        for i in range(n):
-            x, y = self.next_step()
-            xList.append(x)
-            yList.append(y)
-            # x0 = round(x0 + self.h, 2)
+    def next_step(self):
+        k1 = self.f(self.x, self.y)
+        k2 = self.f(self.x + self.h, self.y + self.h * k1)
+        self.y += (self.h/2) * (k1 + k2)
+        self.x = round(self.x + self.h, 2)
 
-            # k1 = self.f(x0, y0)
-            # k2 = self.f(x0 + self.h/2, y0 + self.h/2 * k1)
-            # k3 = self.f(x0 + self.h/2, y0 + self.h/2 * k2)
-            # k4 = self.f(x0 + self.h, y0 + self.h*k3) 
+        return (self.x, self.y)
+    
+class Heun(Metodo):
+    def __init__(self, x0, y0, h, f):
+        super().__init__(x0, y0, h)
+        self.f = f
 
-            # y0 += self.h * (1/6) * (k1 + 2*k2 + 2*k3 + k4)         
+    def next_step(self):
+        k1 = self.f(self.x, self.y)
+        k2 = self.f(self.x + (self.h/3), self.y + ((self.h/3) * k1))
+        k3 = self.f(self.x + ((2/3) * self.h), self.y + ((2/3) * self.h * k2))
 
-            # xList.append(x0)
-            # yList.append(y0)
+        self.y += (self.h/4) * (k1 + (3*k3))
 
-        return xList, yList
+        self.x = round(self.x + self.h, 2)
+
+        return (self.x, self.y)
+
+class Nystrom(Metodo):
+    def __init__(self, x0, y0, h, f):
+        super().__init__(x0, y0, h)
+        self.f = f
+
+    def next_step(self):
+        k1 = self.f(self.x, self.y)
+        k2 = self.f(self.x + ((2/3) * self.h), self.y + ((2/3) * self.h * k1))
+        k3 = self.f(self.x + ((2/3) * self.h), self.y + ((2/3) * self.h * k2))
+
+        self.y += (self.h/4) * (k1 + ((3/2) * (k2 + k3)))
+
+        self.x = round(self.x + self.h, 2)
+
+        return (self.x, self.y)
 
 
 if __name__ == '__main__':
