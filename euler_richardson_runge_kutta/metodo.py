@@ -16,7 +16,10 @@ class Metodo:
         xList = [self.x0]
         yList = [self.y0]
 
-        n = int((xn / self.h))
+        n = (xn-self.x0) / self.h
+        if (int(n) != 0):
+            n = int(n) + 1
+
         
         for i in range(n):
             x, y = self.next_step()

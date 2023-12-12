@@ -5,10 +5,10 @@ import seaborn
 from prettytable import PrettyTable
 
 def yLinha(t, y):
-    return -y
+    return y
 
 def yReal(t, y):
-    return math.exp(-t)
+    return math.exp(t)
 
 
 def calcularErro(ti, yi, aproximado):
@@ -27,7 +27,7 @@ def imprimirTabelaEulerRichardson(t0, y0, tn, h):
         x, y = euler(t0, y0, tn, h)
         x2h, y2h = euler(t0, y0, tn, 2*h)
 
-        table = PrettyTable(['h', 'xi', 'REAL', 'APROXIMADO', 'APROX. RICHARDSON', 'ERRO EULER', 'ERRO RELATIVO', 'EULER VS RICHARDSON' , 'ERRO APROXIM RICHARDSON', 'APROX RICHARDOSON MELHOR?'])
+        table = PrettyTable(['h', 'x', 'y real', 'y euler', 'aproximacao', 'ERRO EULER', 'estimativa erro'])
 
         for xi, yi in zip(x, y):
             real = yReal(xi, yi)
@@ -38,11 +38,13 @@ def imprimirTabelaEulerRichardson(t0, y0, tn, h):
             if (int(xi) == xi): 
                 j = x2h.index(xi)
                 erro_rirchardson = yi - y2h[j]
+                relativo_richardson = calcularErroRelativo(xi, yi, erro_rirchardson)
                 aprox_rirchardson = 2*yi - y2h[j]
                 relativo = calcularErroRelativo(xi, yi, yi)
                 richardson_real = yReal(xi, yi) - aprox_rirchardson 
 
-                table.add_row([h, xi, real, yi, aprox_rirchardson, erro, relativo, erro_rirchardson, richardson_real, abs(richardson_real) < abs(erro) ])
+                table.add_row([h, xi, real, yi, aprox_rirchardson, erro, erro_rirchardson])
+
 
         print(table)
         
@@ -94,9 +96,9 @@ def imprimirGraficoEulerRirchardson(x0, y0, xn, h):
 if __name__ == '__main__':
     x0 = 0
     y0 = 1
-    xn = 10
+    xn = 5
     h = 0.1
-    hs = [0.05]
+    hs = [0.1, 0.05]
 
     y1 = y0
     x1 = x0
